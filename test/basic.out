@@ -1,0 +1,20 @@
+
+[31mTargets[0m
+    [36mbuild[0m
+        Build some stuff.[0m
+    [36mclean[0m
+        Delete build artefacts locally.[0m
+    [36mdeploy[0m
+        Deploy some stuff.[0m
+    [36mhelp[0m
+        Print help.[0m
+
+[31mVariables[0m
+    [33march[0m=[33;4marm64[0m
+        Platform architecture for build: [4;2marm64[24;22m or [4;2mx86_64[24;22m.[0m
+    [33menv[0m=[33;4m[0m
+        Target deployment environment: [4;2mdev[24;22m or [4;2mprod[24;22m.[0m
+    [33mtag[0m=[33;4m[0m
+        Release tag.[0m
+
+

@@ -1,0 +1,268 @@
+#!/bin/bash
+# shellcheck disable=SC2181
+
+# Run a command in a kitty terminal window, snapshot and trim the output.
+
+PROG=$(basename "$0")
+# Set to yes for debug output
+DEBUG=
+
+border_width=10
+border_colour=
+outfile=cli-cmd.png
+# Default is controlling terminal
+win_rows=
+win_cols=
+# Colour fuzz percentage for trim
+fuzz=10
+font_size=14
+
+# ------------------------------------------------------------------------------
+function usage {
+	cat <<!
+
+Run the specified command in a kitty terminal window and screenshot the output.
+
+Usage: $PROG [-h] [-o output] command
+
+Options:
+    -b colour
+            Set the border colour to be the specified colour name or hex colour
+	    (# followed by 6 hex digits). Defaults to the colour of the top left
+	    pixel of the untrimmed image (which is typically the terminal
+	    background colour).
+    -c cols
+            CLI window width (columns). Default is the width of the controlling
+            terminal ($win_cols).
+    -d      Enable debugging output.
+    -f points
+            Font size. Default is $font_size points.
+    -h      Print help.
+    -o output.png
+            Write the output image to the specified file. Defaults to $outfile.
+    -r rows
+            CLI window height (rows). Default is the height of the controlling
+            terminal ($win_rows).
+    -w pixels
+            Set the border width to be the specified number of pixels. Default
+            is $border_width.
+
+!
+}
+
+function tty_size {
+	# shellcheck disable=SC2046
+	set -- $(stty size)
+	[ $? -ne 0 ] && abort "Cannot determine controlling terminal size"
+	win_rows="$1"
+	win_cols="$2"
+}
+
+function error {
+	echo "$PROG: $*" >&2
+}
+
+function abort {
+	error "$*"
+	exit 1
+}
+
+function debug {
+	[ "$DEBUG" == "yes" ] && echo -e "\033[2m$*\033[0m"
+}
+
+function warning {
+	echo "⚠️  $*"
+}
+
+function file_lines {
+	# shellcheck disable=SC2046
+	set -- $(wc -l "$1")
+	echo "$1"
+}
+
+function require_prog {
+	local prog
+
+	for prog
+	do
+		"$prog" --help > /dev/null 2>&1
+		[ $? -eq 127 ] && abort "$prog must be installed"
+	done
+}
+
+# Get kitty window geometry. Uses AppleScript. Gets confused
+# in the presence of multiple windows.
+function get_kitty_geometry {
+	local geometry X Y WIDTH HEIGHT
+
+	# Get window position and size in pixels.
+	geometry=$(osascript << 'APPLESCRIPT'
+tell application "System Events"
+    tell process "kitty"
+        try
+            set w to window 1
+            set winPos to position of w
+            set winSize to size of w
+            set x to item 1 of winPos
+            set y to item 2 of winPos
+            set width to item 1 of winSize
+            set height to item 2 of winSize
+            return (x as string) & "," & (y as string) & "," & (width as string) & "," & (height as string)
+        on error errMsg
+            return "ERROR:" & errMsg
+        end try
+    end tell
+end tell
+APPLESCRIPT
+)
+
+	[[ "$geometry" == ERROR:* ]] && abort "Failed to get window geometry: $geometry"
+	# Parse the geometry - clean up any whitespace
+	IFS=',' read -r X Y WIDTH HEIGHT <<< "$geometry"
+	X=$(echo "$X" | tr -d ' ')
+	Y=$(echo "$Y" | tr -d ' ')
+	WIDTH=$(echo "$WIDTH" | tr -d ' ')
+	HEIGHT=$(echo "$HEIGHT" | tr -d ' ')
+
+	echo "$X" "$Y" "$WIDTH" "$HEIGHT"
+}
+
+# ------------------------------------------------------------------------------
+tty_size
+# shellcheck disable=SC2048,SC2086
+args=$(getopt b:c:df:ho:r:w: $*)
+[ $? -ne 0 ] && usage && exit 1
+# shellcheck disable=SC2086
+set -- $args
+while :
+do
+	case "$1" in
+	-b)	border_colour="$2"; shift 2 ;;
+	-c)	win_cols="$2"; win_cols=$((win_cols + 0)); shift 2 ;;
+	-d)	DEBUG=yes; shift ;;
+	-f)	font_size="$2"; shift 2 ;;
+	-h)	usage; exit 0 ;;
+	-o)	outfile="$2"; shift 2 ;;
+	-r)	win_rows="$2"; win_rows=$((win_rows + 0)); shift 2 ;;
+	-w)	border_width="$2"; border_width=$((border_width + 0)); shift 2 ;;
+	--)	shift; break ;;
+	esac
+done
+
+[ $# -eq 0 ] && usage && exit 0
+command="$*"
+
+# ------------------------------------------------------------------------------
+[ "$(uname -s)" != Darwin ] && abort "macOS only"
+require_prog kitty magick
+pgrep -i kitty > /dev/null && abort "Quit kitty first"
+
+kitty_pid=
+tmpd=$(mktemp -d)
+z=1
+trap '/bin/rm -rf "$tmpd"; [ "$kitty_pid" != "" ] && kill "$kitty_pid" 2>/dev/null; exit $z' 0
+
+
+# ------------------------------------------------------------------------------
+debug "Creating kitty configuration..."
+
+# Create kitty config that includes theme
+kitty_conf="$tmpd/kitty.conf"
+cat > "$kitty_conf" <<-!
+	include ${HOME}/.config/kitty/kitty.conf
+	hide_window_decorations yes
+	window_padding_width 0
+	scrollback_lines 0
+	cursor_blink_interval 0
+	enable_audio_bell no
+	font_size $font_size
+	remember_window_size no
+	initial_window_width ${win_cols}c
+	initial_window_height ${win_rows}c
+!
+
+# Sentinel file for synchronization
+sentinel="$tmpd/marker"
+
+# ------------------------------------------------------------------------------
+debug "Launching kitty window and running command..."
+
+# Launch kitty and run the command directly inside it
+kitty --config="$kitty_conf" \
+      sh -c "clear; ($command | tee $tmpd/cmd_out); printf '\033[?25l'; touch '$sentinel'; sleep 10" &
+kitty_pid=$!
+
+debug "Waiting for command to complete..."
+while [ ! -f "$sentinel" ]
+do
+	sleep 0.1
+done
+
+line_count=$(file_lines "$tmpd/cmd_out")
+[ "$line_count" -gt "$win_rows" ] && warning "Output exceeded window height"
+[ "$line_count" -eq 0 ] && warning "No output produced?"
+
+# Give it a moment to render
+sleep 0.5
+
+debug "Getting window position and size..."
+
+# shellcheck disable=SC2046
+set -- $(get_kitty_geometry)
+x="$1"; y="$2"; width="$3"; height="$4"
+	
+
+debug "Position: ($x, $y)  Size: ${width}x${height}"
+
+# Check if coordinates are problematic and move window if needed
+if [ "$x" -lt 0 ] || [ "$y" -lt 0 ] || [ "$width" -lt 10 ] || [ "$height" -lt 10 ]
+then
+	debug "Adjusting window position to main display..."
+	osascript <<-'APPLESCRIPT'
+		tell application "System Events"
+		    tell process "kitty"
+			tell window 1
+			    set position to {100, 100}
+			end tell
+		    end tell
+		end tell
+	APPLESCRIPT
+    
+	sleep 1
+    
+	# Get coordinates again
+	# shellcheck disable=SC2046,SC2046
+	set -- $(get_kitty_geometry)
+	x="$1"; y="$2"; width="$3"; height="$4"
+	debug "New position: ($x, $y)  Size: ${width}x${height}"
+fi
+
+# ------------------------------------------------------------------------------
+# Capture the region
+debug "Taking screenshot of region..."
+screencapture -R"${x},${y},${width},${height}" "$tmpd/img"
+
+[ ! -f "$tmpd/img" ] || [ ! -s "$tmpd/img" ] && abort "Screenshot failed"
+
+# ------------------------------------------------------------------------------
+# Trim the screenshot
+
+[ "$border_colour" == "" ] && \
+	border_colour="#$(magick "$tmpd/img" -alpha off -format '%[hex:p{0,0}]' info:)"
+
+debug "Border colour is $border_colour"
+
+debug "Trimming image ..."
+
+magick "$tmpd/img" \
+        -fuzz "${fuzz}%" \
+        -trim +repage \
+        -bordercolor "${border_colour}" \
+        -border "${border_width}" \
+        "$tmpd/trimmed"
+
+mv "$tmpd/trimmed" "$outfile"
+echo "✅ Screenshot saved to $outfile"
+
+z=0
