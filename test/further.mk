@@ -11,13 +11,13 @@ tag=
 restart=no
 
 ## Build some stuff.
-#@opt arch
+#@opt arch tag
 build:
 	@echo Building for $(arch) ...
 
 ## Deploy some stuff. The *env* variable specifies the target environment.
 ## If *restart* is set to `yes` the system will be restarted after deployment.
-#@req env
+#@req env tag
 #@opt restart
 deploy:	preflight build
 	@echo Deploying to $(env) with restart=$(restart) ...

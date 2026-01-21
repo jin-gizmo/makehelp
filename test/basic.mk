@@ -1,16 +1,13 @@
-# Demo makefile for **MakeHelp**.
+# Demo makefile for MakeHelp.
 
 include help.mk
 
 ## Target deployment environment: `dev` or `prod`.
 env=
-
 ## Platform architecture for build: `arm64` or `x86_64`.
 arch:=$(shell arch)
-
 ## Release tag.
 tag=
-
 restart=no
 
 ## Build some stuff.

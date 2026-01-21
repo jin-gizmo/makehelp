@@ -31,7 +31,7 @@ dist/%:	%
 	sed -e 's/!VERSION!/$(VERSION)/' $< > $@
 
 doc/img/sample-%.png: doc/samples/%.mk
-	etc/cli-cmd-snap -o "$@" -c80 -r70 -f14 -- make -f "$<"
+	etc/cli-cmd-snap -o "$@" -c80 -r70 -f13 -- make -f "$<"
 
 ## Make the distribution versions of the $(APP) components.
 dist:	$(DIST)
@@ -61,9 +61,9 @@ test:
 screenshots: $(IMAGES)
 
 draft=false
-# @opt draft
 
 ## Create a github release. Set *draft* to either `true` or `false`.
+#@opt draft
 release:
 	@if gh release view "v$(VERSION)" > /dev/null 2>&1 ; \
 	then \
@@ -73,7 +73,7 @@ release:
 			--draft="$(draft)" \
 			--verify-tag=false \
 			--title "Version $(VERSION)" \
-			--notes "$(REPO_URL)/#release-notes" \
+			--notes "$(REPO_URL)/tree/master?tab=readme-ov-file#release-notes" \
 			"v$(VERSION)" ; \
 	else \
 		echo "Creating new release for tag v$(VERSION)" ; \
@@ -82,7 +82,7 @@ release:
 			--fail-on-no-commits \
 			--verify-tag=false \
 			--title "Version $(VERSION)" \
-			--notes "$(REPO_URL)/#release-notes" \
+			--notes "$(REPO_URL)/tree/master?tab=readme-ov-file#release-notes" \
 			"v$(VERSION)" \
 			$(SRC) ; \
 	fi

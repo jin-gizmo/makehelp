@@ -18,13 +18,10 @@ HELP_CATEGORY=Miscellaneous targets
 # ------------------------------------------------------------------------------
 ## Target deployment environment. Must be one of `dev` or `prod`.
 env=
-
 ## Release tag.
 tag=
-
 ## Platform architecture for build: `arm64` or `x86_64`.
 arch:=$(shell arch)
-
 restart=no
 
 #@cat Primary targets

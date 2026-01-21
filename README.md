@@ -1,7 +1,7 @@
 # Makefile Help Maker
 
 <div align="center">
-<img src="doc/img/make-help-icon.png" alt="MakeHelp Logo" width="240px" height="auto">
+<img src="doc/img/make-help-icon.png" alt="MakeHelp Logo" width="150px" height="auto">
 </div>
 
 <br clear="left"/>
@@ -154,19 +154,16 @@ included in help text using `##` as the comment marker. **MakeHelp** will
 recognise these. Comments with a single `#` are ignored.
 
 ```makefile
-# Demo makefile for **MakeHelp**.
+# Demo makefile for MakeHelp.
 
 include help.mk
 
 ## Target deployment environment: `dev` or `prod`.
 env=
-
 ## Platform architecture for build: `arm64` or `x86_64`.
 arch:=$(shell arch)
-
 ## Release tag.
 tag=
-
 restart=no
 
 ## Build some stuff.
@@ -236,13 +233,13 @@ tag=
 restart=no
 
 ## Build some stuff.
-#@opt arch
+#@opt arch tag
 build:
 	@echo Building for $(arch) ...
 
 ## Deploy some stuff. The *env* variable specifies the target environment.
 ## If *restart* is set to `yes` the system will be restarted after deployment.
-#@req env
+#@req env tag
 #@opt restart
 deploy:	preflight build
 	@echo Deploying to $(env) with restart=$(restart) ...
@@ -278,9 +275,14 @@ Key points:
     aggregated.
 
 *   By default, `#@req` and `#@opt` directives are resolved recursively down the
-    tree of dependencies. Note that because the `deploy` target depends on the
-    `build` target which accepts an optional `arch` variable, `deploy` is also
-    shown as accepting it.
+    tree of dependencies. The `deploy` target depends on the `build` target
+    which accepts an optional `arch` and `tag` variables, so `deploy` is also
+    shown as accepting them.
+
+*   The `tag` variable is *optional* for the `build` target but is upgraded to
+    *required* for the `deploy` target. Required variables override optional
+    ones.
+
 
 ## Getting Fancy
 
@@ -352,6 +354,10 @@ Key points:
     assigned until another `#@cat` directive sets a new value. The starting
     value is `Targets`.
 
+*   The `help` target is special because it is provided as part of the included
+    `help.mk`. To assign it to a non-default category, set `HELP_CATEGORY` in
+    the makefile.
+
 *   Target categories are sorted in the order in which they are first referenced.
     If targets aren't naturally sorted in the makefile, add a set of `#@cat`
     directives at the top of the file to enforce the desired order.
@@ -361,7 +367,7 @@ Key points:
 
 *   Variable categories are always shown after target categories.
 
-*   Within categories, targets and variables are always sorted alphabetically.
+*   Within categories, targets and variables are sorted alphabetically.
 
 *   `#@vcat` works exactly the same way as `#@cat` except for variables instead
     of targets. The initial variable category is `Variables`.
@@ -370,19 +376,11 @@ Key points:
     variable descriptions, including in-line styling, variable substitutions,
     filling and wrapping.
 
-*   The `help` target is special because it is provided as part of the included
-    `help.mk`. To assign it to a non-default category, set `HELP_CATEGORY` in
-    the makefile.
-    
-*   The `tag` variable is optional for the `build`
-    target but is upgraded to required for the `deploy` target. Required
-    variables override optional ones.
-
 ## Directives
 
-**MakeHelp** *directives* provide additional information and
-control for the help text. Directive are lines in the source makefile starting
-with `#@` *immediately* followed by the directive name.
+**MakeHelp** *directives* provide additional information and control for the
+help text. Directive are lines in the source makefile starting with `#@`
+*immediately* followed by the directive name.
 
 > There is no space between the `#@` and the directive name. `#@ cat` means
 > nothing to **MakeHelp**. 
@@ -392,7 +390,7 @@ with `#@` *immediately* followed by the directive name.
 | `#@cat`   | Set the current category for targets. All subsequent targets will be assigned to this category until a new value is set. The starting value is `Targets`. |
 | `#@opt`   | Declare one or more variables as optionally accepted by the next target. The directive accepts one or more string arguments of the form `name` or `name=value`. If a value is not specified in the directive, **MakeHelp** will show an existing defined value, if possible |
 | `#@req`   | Declare one or more variables as required by the next target. Details as for `#@opt`. |
-| `#@var`   | Declare the value of a **make** variable for use by **MakeHelp**. The directive accepts a string argument in the form `name=value`.  This is used by the provided `help.mk` makefile to pass **make** variables to **MakeHelp**. It is almost never needed in a user makefile. |
+| `#@var`   | Declare the value of a **make** variable for use by **MakeHelp**. The directive accepts a string argument in the form `name=value`.  This is used by the provided `help.mk` makefile to pass **make** variables to **MakeHelp**. It should rarely be needed in a user makefile. |
 | `#@vcat`  | Set the current category for variables. All subsequent variables will be assigned to this category until a new value is set. The starting value is `Variables`. |
 
 ## Make Variables used by MakeHelp
@@ -404,7 +402,7 @@ makefile to control elements of its behaviour.
 | ------------------- | ------------------------------------------------------------ |
 | `HELP_CATEGORY`     | Specifies the category to which the `help` target is assigned. Set it to `none` to exclude the `help` target from the help documentation. Defaults to `Targets`. |
 | `HELP_DEPENDENCIES` | If set to `no`, don't include the variable requirements of dependencies of targets. By default, variable requirements of any dependencies of a target are (recursively) added to those of the target itself as declared in `#@req` and `#@opt` directives. |
-| `HELP_HR`           | If set to `yes`, add horizontal rules after the prologue and before the epilogue. This may not work in some terminals (e.g. macOS Terminal.app) but it's harmless. |
+| `HELP_HR`           | If set to `yes`, add horizontal rules after the prologue and before the epilogue. This may not work in some terminals (e.g. macOS Terminal.app) but it's harmless. Defaults to `no`. |
 | `HELP_SORT`         | By default, categories are sorted in the order in which they are first referenced. Set `HELP_SORT` to `alpha` so sort categories alphabetically. |
 | `HELP_THEME`        | Colour theme for generated help. Options are `basic` (the default), `light`, `dark` and `none`. The latter removes all ANSI escape sequences used to colour text. |
 | `HELP_WIDTH`        | Specifies the terminal width (columns) for filling and wrapping of descriptions. Defaults to the actual terminal width. The minimum allowed value is 65. |

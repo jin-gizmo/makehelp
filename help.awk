@@ -66,7 +66,8 @@ function load_theme(theme) {
     THEMES["basic", "value"] = "\033[33;4m"     # yellow + underline
     THEMES["basic", "prologue"] = ""
     THEMES["basic", "description"] = ""
-    THEMES["basic", "code"] = "\033[4;2m"         # underline for code in backticks
+    THEMES["basic", "warning"] = "\033[1;93;7m"
+    THEMES["basic", "code"] = "\033[4;2m"       # underline for code in backticks
     THEMES["basic", "code-reset"] = "\033[24;22m"
     THEMES["basic", "bold"] = "\033[1m"
     THEMES["basic", "bold-reset"] = "\033[22m"
@@ -83,7 +84,8 @@ function load_theme(theme) {
     THEMES["dark", "value"] = "\033[34;4m"      # blue + underline
     THEMES["dark", "prologue"] = ""
     THEMES["dark", "description"] = ""
-    THEMES["dark", "code"] = "\033[4;2m"          # underline for code in backticks
+    THEMES["dark", "warning"] = "\033[1;93;7m"
+    THEMES["dark", "code"] = "\033[4;2m"         # underline for code in backticks
     THEMES["dark", "code-reset"] = "\033[24;22m"
     THEMES["dark", "bold"] = "\033[1m"
     THEMES["dark", "bold-reset"] = "\033[22m"
@@ -100,6 +102,7 @@ function load_theme(theme) {
     THEMES["light", "value"] = "\033[93;4m"     # bright yellow + underline
     THEMES["light", "prologue"] = ""
     THEMES["light", "description"] = ""
+    THEMES["light", "warning"] = "\033[1;93;7m"
     THEMES["light", "code"] = "\033[4m"         # underline for code in backticks
     THEMES["light", "code-reset"] = "\033[24m"
     THEMES["light", "bold"] = "\033[1m"
@@ -117,6 +120,7 @@ function load_theme(theme) {
     THEMES["none", "value"] = ""
     THEMES["none", "prologue"] = ""
     THEMES["none", "description"] = ""
+    THEMES["none", "warning"] = ""
     THEMES["none", "code"] = "`"
     THEMES["none", "code-reset"] = "`"
     THEMES["none", "bold"] = "++"    # Cannot be ** or will clash with italic
@@ -138,6 +142,7 @@ function load_theme(theme) {
     F_VAL = THEMES[theme, "value"]
     F_LOG = THEMES[theme, "prologue"]       # Prologue and epilogue
     F_DSC = THEMES[theme, "description"]    # Target and variable descriptions
+    F_WARN = THEMES[theme, "warning"]
     F_CODE = THEMES[theme, "code"]          # Code in backticks
     R_CODE = THEMES[theme, "code-reset"]
     F_BOLD = THEMES[theme, "bold"]
@@ -150,13 +155,13 @@ function load_theme(theme) {
 
     # Indents
     I_L_CAT = 0     # Left indent for category headings
-    I_L_TGT = 4     # Left indent for targets / Make Variables
+    I_L_TGT = 4     # Left indent for targets / variables
     I_L_DSC = 8     # Left indent for descriptions
     I_R_DSC = 0     # Right indent for descriptions
     I_L_LOG = 4     # Left indent for prologue and epilogue
     I_R_LOG = 4     # Right indent for prologue and epilogue
-    I_L_HR = 4      # Left indent for hoizontal rule
-    I_R_HR = 4      # Right indent for hoizontal rule
+    I_L_HR = 4      # Left indent for horizontal rule
+    I_R_HR = 4      # Right indent for horizontal rule
 }
 
 # Try to determine TTY width. Returns 0 on failure.
@@ -470,6 +475,10 @@ function stderr(s) {
     close("cat 1>&2")
 }
 
+function warning(s) {
+    stderr(F_WARN "WARNING: " s R_ALL)
+}
+
 # For debugging -- print array contents
 #function aprint(heading, array,    k) {
 #    print (heading ":")
@@ -494,7 +503,7 @@ $1 == "#@var" {
 }
 
 $1 == "#@" {
-    stderr("* WARNING: " FILENAME ": Line " FNR " has a bare #@ -- could be a directive typo")
+    warning(FILENAME ": Line " FNR " has a bare #@ -- could be a directive typo")
     next
 }
 
