@@ -1,7 +1,10 @@
+# Don't recursively resolve dependencies.
+
 include help.mk
 
 # Assign the "help" target to this category.
 HELP_CATEGORY=Miscellaneous targets
+HELP_DEPENDENCIES=no
 
 #+ **Demo makefile for MakeHelp**.
 #+

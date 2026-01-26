@@ -1,0 +1,27 @@
+
+    The value of [3mvar1[23m here is [4;2mglobal1[24;22m. It should be [4;2mglobal1[24;22m.[0m
+    [38;5;246m(0qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq(B[0m
+
+[31mTargets[0m
+    [36mchild[0m [33mchild1=[0m[33;4madopted[0m[33m[0m
+        Child target.[0m
+    [36mhelp[0m
+        Print help.[0m
+    [36mparent[0m [33mchild1=[0m[33;4madopted[0m[33m[0m [33mvar1=[0m[33;4mlocal1[0m[33m[0m [33m[var2=[0m[33;4mlocal2[0m[33m][0m [33m[var3=[0m[33;4m[0m[33m][0m
+        [3mvar1[23m should have a value of [4;2mlocal1[24;22m not [4;2mglobal1[24;22m. Perceived value is
+        [4;2mlocal1[24;22m.[0m
+
+        [3mvar2[23m should have a value of [4;2mlocal2[24;22m not [4;2mglobal2[24;22m. Perceived value is
+        [4;2mlocal2[24;22m.[0m
+
+        [3mvar3[23m should be empty, not [4;2mglobal3[24;22m.[0m
+
+[31mGlobals[0m
+    [33mvar1[0m=[33;4mglobal1[0m
+        This is the global version of [3mvar1[23m.[0m
+    [33mvar2[0m=[33;4mglobal2[0m
+        This is the global version of [3mvar2[23m.[0m
+    [33mvar3[0m=[33;4mglobal3[0m
+        This is the global version of [3mvar3[23m.[0m
+
+

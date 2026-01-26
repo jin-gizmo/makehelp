@@ -1,9 +1,9 @@
 include help.mk
 
-# Draw horizontal rules to separate prologue / epilogue from the main help body.
-HELP_HR=yes
 # Assign the "help" target to this category.
 HELP_CATEGORY=Miscellaneous targets
+# Sort catgeories alphabetically
+HELP_SORT=alpha
 
 #+ **Demo makefile for MakeHelp**.
 #+
@@ -21,27 +21,27 @@ env=
 ## Release tag.
 tag=
 ## Platform architecture for build: `arm64` or `x86_64`.
-arch:=$(shell arch)
+arch:=$(shell echo arm64)
 restart=no
 
-#@cat Primary targets
+#:cat Primary targets
 
 ## Build some stuff.
-#@opt arch tag
+#:opt arch tag
 build:
 	@echo Building for $(arch) ...
 
 ## Deploy some stuff. The *env* variable specifies the target environment.
 ## If *restart* is set to `yes` the system will be restarted after deployment.
-#@req env tag
-#@opt restart
+#:req env tag
+#:opt restart
 deploy:	preflight build
 	@echo Deploying to $(env) with restart=$(restart) ...
 
 preflight:
 	@echo Check everything is in order for deployment
 
-#@cat Miscellaneous targets
+#:cat Miscellaneous targets
 
 ## Delete build artefacts locally.
 clean:

@@ -20,8 +20,8 @@
 # 	Specify output width for wrapping descriptive text. If not set, the
 # 	current terminal width is used.
 # HELP_HR
-# 	If set to `yes`, add horizontal rules after any prologue and before any
-# 	epilogue.
+# 	Set to `no`, to disable horizontal rules after any prologue and before
+# 	any epilogue.
 # HELP_SORT
 # 	If set to `alpha`, categories are sorted alphabetically instead of order
 # 	of appearance.
@@ -39,14 +39,31 @@
 HELP_DIR:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 ## Print help.
+help:	SHELL=/bin/bash
+help:	AWK=awk
+
 help:
-	@make -pn -f "$(firstword $(MAKEFILE_LIST))" | \
-		sed -n -e 's/^ *\([A-Za-z0-9_.-][A-Za-z0-9_.-]*\) *[:+!?]*= *\(.*\)/#@var \1=\2/p' | \
-		awk -f "$(HELP_DIR)/help.awk" \
+	@theme="$(HELP_THEME)" ; \
+	if [ "$(HELP_THEME)" == "" ]; then \
+		if [ ! -t 1 ] ; then \
+			theme=none ; \
+		else \
+			IFS=';' read -r -a fgbg <<< "$${COLORFGBG:-15;0}" ;  \
+			theme=dark ; \
+			[ "$${fgbg[0]}" -lt "$${fgbg[1]}" ] && theme=light ; \
+			colours="$$(tput colors 2>/dev/null || 0)" ; \
+			[ "$$colours" -lt 256 ] && theme="$${theme}8" ; \
+			[ "$$colours" -lt 8 ] && theme=none ; \
+		fi ; \
+	fi ; \
+	make -pn -f "$(firstword $(MAKEFILE_LIST))" \
+		| $(AWK) -f "$(HELP_DIR)/help.awk" -v preprocess=1 \
+		| $(AWK) -f "$(HELP_DIR)/help.awk" \
 			-v width="$(HELP_WIDTH)" \
-			-v theme="$(HELP_THEME)" \
+			-v theme="$$theme" \
 			-v hr="$(HELP_HR)" \
 			-v sort_mode="$(HELP_SORT)" \
 			-v help_category="$(HELP_CATEGORY)" \
 			-v resolve_dependencies="$(HELP_DEPENDENCIES)" \
 			- $(MAKEFILE_LIST)
+

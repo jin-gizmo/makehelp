@@ -2,6 +2,7 @@ include help.mk
 
 # Assign the "help" target to this category.
 HELP_CATEGORY=Miscellaneous targets
+HELP_HR=no
 
 #+ **Demo makefile for MakeHelp**.
 #+
