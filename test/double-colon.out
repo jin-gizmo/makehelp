@@ -1,0 +1,12 @@
+
+[31mTargets[0m
+    [36mdep1[0m [33mdep1-req1=[0m[33;4m[0m[33m[0m [33mdep1-req2=[0m[33;4m[0m[33m[0m [33m[dep1-opt1=[0m[33;4m[0m[33m][0m [33m[dep1-opt3=[0m[33;4m[0m[33m][0m [33m[dep2-opt=[0m[33;4msome-val[0m[33m][0m
+        Dep1 depends on dep2.[0m Dep1 - first comment.[0m Dep1 - second comment.[0m
+    [36mdep2[0m [33m[dep2-opt=[0m[33;4msome-val[0m[33m][0m
+        Dep2 has no dependencies.[0m
+    [36mhelp[0m
+        Print help.[0m
+    [36mmain[0m [33mdep1-req1=[0m[33;4m[0m[33m[0m [33mdep1-req2=[0m[33;4m[0m[33m[0m [33m[dep1-opt1=[0m[33;4m[0m[33m][0m [33m[dep1-opt3=[0m[33;4m[0m[33m][0m [33m[dep2-opt=[0m[33;4msome-val[0m[33m][0m
+        Main depends on dep1.[0m
+
+

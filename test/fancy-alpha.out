@@ -1,0 +1,35 @@
+
+    [1mDemo makefile for MakeHelp[22m.[0m
+
+    Go to https://github.com/jin-gizmo/makehelp for more information.[0m
+    [38;5;246m(0qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq(B[0m
+
+[31mMiscellaneous targets[0m
+    [36mclean[0m
+        Delete build artefacts locally.[0m
+    [36mhelp[0m
+        Print help.[0m
+
+[31mPrimary targets[0m
+    [36mbuild[0m [33m[arch=[0m[33;4marm64[0m[33m][0m [33m[tag=[0m[33;4m[0m[33m][0m
+        Build some stuff.[0m
+    [36mdeploy[0m [33menv=[0m[33;4m[0m[33m[0m [33mtag=[0m[33;4m[0m[33m[0m [33m[arch=[0m[33;4marm64[0m[33m][0m [33m[restart=[0m[33;4mno[0m[33m][0m
+        Deploy some stuff. The [3menv[23m variable specifies the target environment.[0m If
+        [3mrestart[23m is set to [4;2myes[24;22m the system will be restarted after deployment.[0m
+
+[31mVariables[0m
+    [33march[0m=[33;4marm64[0m
+        Platform architecture for build: [4;2marm64[24;22m or [4;2mx86_64[24;22m.[0m
+    [33menv[0m=[33;4m[0m
+        Target deployment environment. Must be one of [4;2mdev[24;22m or [4;2mprod[24;22m.[0m
+    [33mtag[0m=[33;4m[0m
+        Release tag.[0m
+
+    [38;5;246m(0qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq(B[0m
+    [3mYou are standing at the end of a road before a small brick building.[0m
+    [3mAround[23m[0m [3myou is a forest. A small stream flows out of the building and[0m
+    [3mdown a gully.[23m[0m
+
+    (If you know, you know. If you don't, you've missed something that AI
+    will[0m never give you.)[0m
+

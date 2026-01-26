@@ -1,0 +1,1 @@
+../doc/samples/further.mk

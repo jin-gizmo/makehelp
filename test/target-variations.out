@@ -1,0 +1,36 @@
+
+[31mTargets[0m
+    [36m(archive-member)[0m
+        This one is an [4;2marchive-member[24;22m.[0m
+    [36ma[0m
+        This one has targets a, b and c.[0m
+    [36mb[0m
+        This one has targets a, b and c.[0m
+    [36mbeamish[0m [33mfoe=[0m[33;4mJabberwock[0m[33m[0m [33m[blade=[0m[33;4mvorpal[0m[33m][0m
+        Beware the Jabberwock, my son! The jaws that bite, the claws that catch!
+        Beware the Jubjub bird, and shun The frumious Bandersnatch![0m
+    [36mboy[0m [33mfoe=[0m[33;4mJabberwock[0m[33m[0m [33m[blade=[0m[33;4mvorpal[0m[33m][0m
+        Beware the Jabberwock, my son! The jaws that bite, the claws that catch!
+        Beware the Jubjub bird, and shun The frumious Bandersnatch![0m
+    [36mc[0m
+        This one has targets a, b and c.[0m
+    [36mhelp[0m
+        Print help.[0m
+    [36mspace-after[0m
+        This one has a space after the name.[0m
+    [36mt1[0m
+        This one is t1 t2.[0m
+    [36mt2[0m
+        This one is t1 t2.[0m
+    [36mtarget[0m
+        This one is [4;2mtarget[24;22m.[0m
+    [36mtarget1[0m
+        This one is [4;2mtarget1[24;22m.[0m
+    [36mvalue[0m [33mfoe=[0m[33;4mJabberwock[0m[33m[0m
+        This one is [4;2m$\(var\)[24;22m --> [4;2mvalue[24;22m[0m
+
+[31mVariables[0m
+    [33mtgtlist[0m=[33;4mt1 t2[0m
+        A list of targets[0m
+
+
