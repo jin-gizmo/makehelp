@@ -37,8 +37,8 @@ override OS:=$(shell \
 	else uname -sr ; \
 	fi)
 
-##
 LEFT=(
+##
 override AWK_VERSION:=$(shell \
 	set -o pipefail ; \
 	awk --version 2>/dev/null | sed -e 's/ *[$(LEFT),].*//;q' ; \
