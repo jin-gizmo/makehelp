@@ -120,9 +120,9 @@ test:
 				| $$diff - $${f%.mk}.out ; \
 			if [ $$? -eq 0 ] ; \
 			then \
-				echo "$$f - 0K" ; \
+				echo -e "\033[32m$$f - OK\033[0m" ; \
 			else \
-				echo "$$f - Failed" ; \
+				echo -e "\033[31m$$f - Failed\033[0m" ; \
 				exit 1 ; \
 			fi ; \
 		done \

@@ -1,7 +1,7 @@
-# Makefile - A Makefile Help Maker
+# MakeHelp - A Makefile Help Maker
 
 <div align="center">
-<img src="doc/img/make-help-icon.png" alt="MakeHelp Logo" width="150px" height="auto">
+<img src="doc/img/makehelp-icon.png" alt="MakeHelp Logo" width="150px" height="auto">
 </div>
 
 <br clear="left"/>
@@ -13,6 +13,13 @@ flexible enough to generate more complex makefile documentation when required.
 **MakeHelp** consists of a small makefile to *include* in your own makefiles and
 a single AWK script.
 
+![GNU Make](https://img.shields.io/badge/Make-6D8B23?logo=GNU)
+![AWK](https://img.shields.io/badge/AWK-6D8B23)
+![Linux](https://img.shields.io/badge/linux-F4BC00?logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/macOS-999999?logo=apple)
+[![GitHub Release](https://img.shields.io/github/v/release/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/blob/master/LICENCE.txt)
+
 ## Features
 
 *   Embedded documentation for makefile targets and variables.
@@ -22,7 +29,7 @@ a single AWK script.
 *   Grouping of documentation for targets and variables into named categories.
 
 *   Generation of documentation for makefile variables and their use in specific
-    targets, including recursive resolution of dependency variables.
+    targets, including recursive resolution of variables from dependencies.
 
 *   Automated text filling and wrapping.
 
@@ -30,7 +37,7 @@ a single AWK script.
 
 *   Simple markdown-style in-line formatting of help text.
 
-*   Themes giving control over colour selection for headings etc.
+*   Themes provide control over colour selection for headings etc.
 
 *   Depends only on things already installed on macOS and most Linux distros.
 
@@ -219,7 +226,7 @@ Key points:
 *   `#` comments are ignored.
 
 *   Descriptions can contain simple Markdown-like in-line styling:
-    \*\***bold**\*\*, \**italic*\*, \__underline_\_ and \``code`\`. 
+    \*\***bold**\*\*, \**italic*\*, \_<ins>underline</ins>\_ and \``code`\`. 
 
 *   Descriptions can also contain `$(var)` substitutions of variables from the
     makefile itself. For variables with computed values (e.g. `x=$(shell ...)`),
@@ -294,13 +301,16 @@ make deploy env=prod restart=yes
 Key points:
 
 *   `#:req` and `#:opt` directives precede the target to specify required
-    and optional variables. They accept one or more string arguments of the form
-    `name` / `name=value`. If a value is not specified in the directive,
-    **MakeHelp** will show an existing defined value, if possible. You only need
-    to declare the variables that the user needs to know about or must specify.
+    and optional variables. They can come before or after descriptive content
+    introduced by `##`. 
 
-*   Multiple `#:req` / `#:opt` directives are allowed. The contents are
-    aggregated.
+*   `#:req` and `#:opt` directives accept one or more string arguments of the
+    form `name` / `name=value`. If a value is not specified in the directive,
+    **MakeHelp** will show an existing defined value, if possible. You only need
+    to declare the variables that you want the user to know about.
+
+*   Multiple `#:req` / `#:opt` directives are allowed, in any order. The
+    contents are aggregated and sorted for display.
 
 *   By default, `#:req` and `#:opt` directives are resolved recursively down the
     tree of dependencies. The `deploy` target depends on the `build` target
@@ -617,12 +627,15 @@ being generated but they may not be fully handled as per **make** semantics.
     static values, `name=value` declarations are generally fine. For variable
     values depending on **make** functions (e.g. `name=$(wildcard *.c)`), it's
     better to use `:=` rather than `=` to force early evaluation.
-*   Dependency names cannot contain escaped colons. If you must do this damn
-    fool thing, don't do it in this damn fool way. Use a `/` or something else
-    instead.)
+
+*   Dependency names cannot contain escaped colons (e.g. to try to create some
+    sort of target grouping). If you must do this damn fool thing, don't do it
+    in this damn fool way. Use a `/` or something else instead.)
+
 *   Makefiles that end in a backslash continuation marker will prevent the final
     line of the file from being processed correctly. A warning is printed if
     this occurs.
+
 *   Conditional (`?=`) and additive (`+=`) variable assignments are ignored.
 
 # More Gizmos
