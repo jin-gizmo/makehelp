@@ -13,6 +13,13 @@ flexible enough to generate more complex makefile documentation when required.
 **MakeHelp** consists of a small makefile to *include* in your own makefiles and
 a single AWK script.
 
+![GNU Make](https://img.shields.io/badge/Make-6D8B23?logo=GNU)
+![AWK](https://img.shields.io/badge/AWK-6D8B23)
+![Linux](https://img.shields.io/badge/linux-F4BC00?logo=linux&logoColor=black)
+![macOS](https://img.shields.io/badge/macOS-999999?logo=apple)
+[![GitHub Release](https://img.shields.io/github/v/release/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/blob/master/LICENCE.txt)
+
 ## Features
 
 *   Embedded documentation for makefile targets and variables.
@@ -30,7 +37,7 @@ a single AWK script.
 
 *   Simple markdown-style in-line formatting of help text.
 
-*   Themes giving control over colour selection for headings etc.
+*   Themes provide control over colour selection for headings etc.
 
 *   Depends only on things already installed on macOS and most Linux distros.
 
