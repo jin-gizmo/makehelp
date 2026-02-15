@@ -58,9 +58,26 @@ dist/%:	% VERSION
 ## Make the distribution versions of the $(APP) components.
 dist:	$(DIST)
 
+_repo_is_clean:
+	@if ! git diff-index --quiet HEAD --; \
+	then \
+		echo "Working directory not clean! Commit or stash first."; \
+		exit 1; \
+	fi
+
+_on_master:
+	@if [ "$$(git rev-parse --abbrev-ref HEAD)" != "master" ]; \
+	then \
+		echo "Not on master branch!"; \
+		exit 1; \
+	fi
+
 ## Create a github release. Set *draft* to either `true` or `false`.
-#:opt draft
-release:
+## To force updating an existing full version tag, set *force* to `-f`.
+#:opt draft force
+release: _repo_is_clean _on_master
+	git tag $(force) "v$(VERSION)"
+	git push origin $(force) "v$(VERSION)"
 	@if gh release view "v$(VERSION)" > /dev/null 2>&1 ; \
 	then \
 		echo "Updating existing release for tag v$(VERSION)" ; \
@@ -97,7 +114,7 @@ test.%:
 	fi
 	@docker run -t --rm -v "$$(pwd):/makehelp" "makehelp-test:$*" make test $(MAKEFLAGS)
 
-## Build a docker image for running $(APP) tests for the targer environment.
+## Build a docker image for running $(APP) tests for the target environment.
 ## `%` must be one of $(_TE).
 image.%:
 	@mkdir -p dist/empty
@@ -143,6 +160,23 @@ test-all: test $(foreach env,$(TESTENVS),test.$(env))
 
 HELP_CATEGORY=Auxiliary targets
 
+## Update the TOC in `README.md`.
+toc:
+	@set -e ; \
+	tmp=$$(mktemp) ; \
+	z=1 ; \
+	trap '/bin/rm -f $$tmp; exit $$z' 0 ; \
+	etc/tocmark README.md > $$tmp || exit ; \
+	if cmp -s README.md $$tmp ; \
+	then \
+		echo "README.md already up to date" ; \
+	else \
+		cp README.md README.md.bak ; \
+		mv $$tmp README.md ; \
+		echo "README.md TOC updated" ; \
+	fi ; \
+	z=0
+
 ## Delete built artefacts.
 clean:
 	$(RM) -r dist
@@ -152,6 +186,15 @@ clean:
 ## The *make screenshots* itself cannot be run from Kitty and Kitty cannot be
 ## open when the process starts.
 screenshots: $(SCREENSHOTS)
+
+## Delete built artefacts and the test docker images.
+clobber:
+	@docker images --filter=reference='makehelp-test:*' --format '{{.Repository}}:{{.Tag}}' | \
+		while read -r img ; \
+		do \
+			docker rmi -f "$$img" ; \
+		done
+
 
 doc/img/sample-%.png: doc/samples/%.mk
 	etc/cli-cmd-snap -o "$@" -c80 -r70 -f13 -- make -f "$<" HELP_THEME=dark

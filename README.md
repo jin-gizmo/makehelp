@@ -1,7 +1,7 @@
 # MakeHelp - A Makefile Help Maker
 
 <div align="center">
-<img src="doc/img/makehelp-icon.png" alt="MakeHelp Logo" width="150px" height="auto">
+<img src="doc/img/makehelp-icon.png" alt="MakeHelp Logo" width="130px" height="auto">
 </div>
 
 <br clear="left"/>
@@ -20,7 +20,13 @@ a single AWK script.
 [![GitHub Release](https://img.shields.io/github/v/release/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/releases/latest)
 [![GitHub License](https://img.shields.io/github/license/jin-gizmo/makehelp)](https://github.com/jin-gizmo/makehelp/blob/master/LICENCE.txt)
 
+---
+<!-- toc-start min=2 max=2 style=linear -->
+<!-- toc-end -->
+---
+
 ## Features
+<!-- toc text= -->
 
 *   Embedded documentation for makefile targets and variables.
 
@@ -116,6 +122,7 @@ Best of luck.
 directory as your makefile, or wherever you like. The two `help.*` files from
 the bundle need to stay together in the one directory.
 
+> [!NOTE]
 >  The `make.vim` file contains syntax colouring instructions for the
 > **MakeHelp** additions for **vim**. See
 > [Editor Support for MakeHelp](#editor-support-for-makehelp).
@@ -144,9 +151,11 @@ it generates.
 
 ![](doc/img/sample-raw.png)
 
+> [!IMPORTANT]
 > Note that `help.mk` will set the default target to be `help`.
 
 ## The Basics
+<!-- toc text="Basics" -->
 
 We'll use the following simple makefile as an example:
 
@@ -321,7 +330,6 @@ Key points:
     *required* for the `deploy` target. Required variables override optional
     ones.
 
-
 ## Getting Fancy
 
 For a simple makefile, like our sample, what we have above is plenty. For large,
@@ -395,7 +403,7 @@ Key points:
     the makefile.
 
 *   Target categories are sorted in the order in which they are first referenced.
-    If targets aren't naturally sorted in the makefile, add a set of `#:cat`
+    If targets aren't naturally sorted in the makefile, add a sequence of `#:cat`
     directives at the top of the file to enforce the desired order.
 
 *   To force categories to be sorted alphabetically, set `HELP_SORT=alpha` in
@@ -412,8 +420,8 @@ Key points:
     variable descriptions, including in-line styling, variable substitutions,
     filling and wrapping.
     
-
 ## Odds and Ends
+<!-- toc text="Odds & Ends" -->
 
 ### Target Specific Variables
 
@@ -552,6 +560,7 @@ Key points:
 help text. Directive are lines in the source makefile starting with `#:`
 *immediately* followed by the directive name.
 
+> [!IMPORTANT]
 > There is no space between the `#:` and the directive name. `#: cat` means
 > nothing to **MakeHelp**. 
 
@@ -565,6 +574,7 @@ help text. Directive are lines in the source makefile starting with `#:`
 | `#:vcat`  | Set the current category for variables. All subsequent variables will be assigned to this category until a new value is set. The starting value is `Variables`. |
 
 ## Make Variables used by MakeHelp
+<!-- toc text="Make Vars used by MakeHelp" -->
 
 **MakeHelp** recognises a few special variables that can be set in the source
 makefile to control elements of its behaviour.
@@ -579,13 +589,14 @@ makefile to control elements of its behaviour.
 | `HELP_WIDTH`        | Specifies the terminal width (columns) for filling and wrapping of descriptions. Defaults to the actual terminal width. The minimum allowed value is 65. |
 
 ## Editor Support for MakeHelp
+<!-- toc text="Editor Support" -->
 
 It's easy to add some basic editor support for the trivial syntax extensions
 introduced by **MakeHelp**.
 
 ### Vim
 
-The `make.vim` file included in a **MakeHelp** release contains syntax colouring
+The `make.vim` file included in a **MakeHelp** release contains syntax colouring
 instructions for the **MakeHelp** additions for **vim**.
 
 Copy this file to `~/.vim/after/syntax/make.vim`. 
@@ -607,11 +618,15 @@ whatever decoration floats your boat.
 
 For example: 
 
-
 <img src='doc/img/jetbrains-todo-1.png' width='250px'>&nbsp;&nbsp;<img src='doc/img/jetbrains-todo-2.png' width='250px'>
 
+Optionally, you can then associate these patterns with typical makefile names
+like so:
+
+![JetBrains TODO Filters](doc/img/jetbrains-todo-3.png)
 
 ## Caveats and Limitations
+<!-- toc text="Limitations" -->
 
 **MakeHelp** is *not* a full makefile parser. Only **make** itself can be
 trusted to do that (most of the time). **MakeHelp** does use **make** itself for
@@ -638,13 +653,7 @@ being generated but they may not be fully handled as per **make** semantics.
 
 *   Conditional (`?=`) and additive (`+=`) variable assignments are ignored.
 
-# More Gizmos
-
-For more gizmos, check out Jin Gizmo.
-
-[![Jin Gizmo Home](https://img.shields.io/badge/Jin_Gizmo_Home-d30000?logo=GitHub&color=d30000)](https://jin-gizmo.github.io)
-
-# Release Notes
+## Release Notes
 
 #### v2.0.0
 
@@ -666,3 +675,11 @@ For more gizmos, check out Jin Gizmo.
 
 Initial release.
 
+## More Gizmos
+
+For more gizmos, check out Jin Gizmo.
+
+[![Jin Gizmo Home](https://img.shields.io/badge/Jin_Gizmo_Home-d30000?logo=GitHub&color=d30000)](https://jin-gizmo.github.io)
+
+> [!NOTE]
+> The table of contents in this README was brought to you by [TOCmark](https://github.com/jin-gizmo/tocmark).
