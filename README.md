@@ -351,7 +351,7 @@ Key points:
 For a simple makefile, like our sample, what we have above is plenty. For large,
 complex makefiles, it can be handy to group targets and variables into related
 categories and present them in a defined order. This is achieved with `#:cat`
-directives for targets and `@vcat` directives for variables.
+directives for targets and `#:vcat` directives for variables.
 
 It can also be helpful to include some broader explanatory information as a
 prologue / epilogue to the help text as a whole. Lines starting with `#+` become
